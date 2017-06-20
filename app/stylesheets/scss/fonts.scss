@@ -1,0 +1,22 @@
+/* Your local CSS File */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Roboto'), local('Roboto'), url(stylesheets/lib/fonts/Roboto/Roboto-Black.ttf) format('truetype');
+}
+
+/* Your local CSS File */
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Ubuntu'), local('Ubuntu'), url(stylesheets/lib/fonts/Ubuntu/Ubuntu-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: url(../lib/fonts/glyphicons/glyphicons-halflings-regular.eot);
+  src: url(../lib/fonts/glyphicons/glyphicons-halflings-regular.eot?#iefix) format('embedded-opentype'), url(../lib/fonts/glyphicons/glyphicons-halflings-regular.woff) format('woff'), url(../lib/fonts/glyphicons/glyphicons-halflings-regular.ttf) format('truetype'), url(../lib/fonts/glyphicons/glyphicons-halflings-regular.svg#glyphicons-halflingsregular) format('svg');
+}
+

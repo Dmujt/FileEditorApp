@@ -1,0 +1,33 @@
+$red-100: lighten(desaturate(#DB5461,15%), 5%);
+$red-200: desaturate(#8B1E3F, 15%);
+
+$orange-100: #F8A868;
+
+$yellow-100: #E3F09B;
+
+$blue-100: #2FCAF3;
+$blue-200: #5F73D9;
+$blue-300: #312C56;
+
+$green-100: #A0D0B3;
+
+$gray-050: #FDFEFE;
+$gray-150: #D4D3E2;
+$gray-100: desaturate(#D9F5FC, 50%) ;
+$gray-200: desaturate(#B3EBFA, 50%) ;
+$gray-300: desaturate(#8DE2F8, 50%) ;
+$gray-400: desaturate(#67D8F6, 50%) ;
+$gray-500: desaturate(#41CEF4, 50%) ;
+$gray-600: desaturate(#2BB8DD, 50%) ;
+$gray-700: desaturate(#2393B1, 50%) ;
+$gray-800: desaturate(#1A6F85, 50%) ;
+$gray-900: desaturate(#124A59, 50%) ;
+
+$beat: 10px;
+
+$tab-col: mix($blue-200, $gray-900, 70%);
+
+$toolbar-height: 30px;
+$tab-height: 23px;
+$tab-seperator-width:1%;
+$tab-seperator-height:1%;

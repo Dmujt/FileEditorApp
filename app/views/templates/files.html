@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+
+<script id="folder_struct_template" type="text/template">
+        <ul class="folder-nav">
+
+        </ul>
+</script>
+
+<script id="file_item_template" type="text/template">
+    <li class="file"><a href="#" file-id="{{fileId}}">{{fileName}}</a></li>
+</script>
+
+<script id="picture_item_template" type="text/template">
+    <li class="file picture"><a href="#" file-id="{{fileId}}">{{fileName}}</a></li>
+</script>
+
+<script id="folder_item_template" type="text/template">
+    <li class="">
+        <a href="#"  file-id="{{fileId}}">
+            {{foldername}}
+        </a>
+        <ul  folder-id="{{fileId}}">
+            {{foldercontents}}
+        </ul>
+    </li>
+</script>
+
+</body>
+</html>

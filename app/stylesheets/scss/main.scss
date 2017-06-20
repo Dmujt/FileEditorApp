@@ -1,0 +1,42 @@
+@import 'fonts.scss';
+@import 'bootstrap.min.scss';
+@import 'variables.scss';
+@import 'menu.scss';
+@import 'toolbar.scss';
+
+/* CSS reset */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td, .row,.col, .container-fluid {
+  margin:0;
+  padding:0;
+}
+html,body {
+  margin:0;
+  padding:0;
+  height:100%;
+  min-height:100%;
+  width:100%;
+}
+
+body{
+  padding:0;
+  margin:0;
+  position:relative;
+}
+
+.yellow{
+  color:$yellow-100;
+}
+.orange{
+  color:$orange-100;
+}
+.green{
+  color:$green-100;
+}
+
+.red{
+  color:$red-100;
+}
+
+.hideme{
+  display:none !important;
+}

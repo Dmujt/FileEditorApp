@@ -1,0 +1,15 @@
+{
+  "name": "helloworld",
+  "main": "index.html",
+  "version": "0.0.1",
+  "single-instance": true,
+
+  "window": {
+    "icon": "img/logo.png",
+    "toolbar": true,
+    "show": true,
+    "width": 1280,
+    "height": 800
+  },
+  "chromium-args": "--child-clean-exit"
+}
