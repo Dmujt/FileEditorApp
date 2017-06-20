@@ -1,1 +1,21 @@
-{"fileManager":{"name":"main file manager","lastFolderStructure":{"Another File.txt":{"html":"\n    <li class=\"file\"><a href=\"#\" file-id=\"Another File.txt\">Another File.txt</a></li>\n","fileType":"file","isDirectory":false,"fileName":"Another File.txt","fullPath":"C:\\Users\\mujtabad\\Desktop\\testtextfiles/Another File.txt"},"hello.txt":{"html":"\n    <li class=\"file\"><a href=\"#\" file-id=\"hello.txt\">hello.txt</a></li>\n","fileType":"file","isDirectory":false,"fileName":"hello.txt","fullPath":"C:\\Users\\mujtabad\\Desktop\\testtextfiles/hello.txt"},"Test Text File 2.txt":{"html":"\n    <li class=\"file\"><a href=\"#\" file-id=\"Test Text File 2.txt\">Test Text File 2.txt</a></li>\n","fileType":"file","isDirectory":false,"fileName":"Test Text File 2.txt","fullPath":"C:\\Users\\mujtabad\\Desktop\\testtextfiles/Test Text File 2.txt"},"This is a Blank Text File.txt":{"html":"\n    <li class=\"file\"><a href=\"#\" file-id=\"This is a Blank Text File.txt\">This is a Blank Text File.txt</a></li>\n","fileType":"file","isDirectory":false,"fileName":"This is a Blank Text File.txt","fullPath":"C:\\Users\\mujtabad\\Desktop\\testtextfiles/This is a Blank Text File.txt"}},"recents":{"count":0,"items":["C:\\Users\\mujtabad\\Desktop\\testtextfiles"]},"lastOpenFile":""},"tray":{},"tabmenues":{"fileManagerMenu":{}},"toolbar":{},"mainMenu":{}}
+{
+  "fileManager":{
+    "name":"main file manager",
+    "lastFolderStructure":{
+      "Another File.txt":{
+        "html":"\n    <li class=\"file\"><a href=\"#\" file-id=\"Another File.txt\">Another File.txt</a></li>\n",
+        "fileType":"file",
+        "isDirectory":false,
+        "fileName":"Another File.txt",
+        "fullPath":"C:\\Users\\mujtabad\\Desktop\\testtextfiles/Another File.txt"},"hello.txt": {"html":"\n    <li class=\"file\"><a href=\"#\" file-id=\"hello.txt\">hello.txt</a></li>\n","fileType":"file","isDirectory":false,"fileName":"hello.txt","fullPath":"C:\\Users\\mujtabad\\Desktop\\testtextfiles/hello.txt"},"Test Text File 2.txt":{"html":"\n    <li class=\"file\"><a href=\"#\" file-id=\"Test Text File 2.txt\">Test Text File 2.txt</a></li>\n","fileType":"file","isDirectory":false,"fileName":"Test Text File 2.txt","fullPath":"C:\\Users\\mujtabad\\Desktop\\testtextfiles/Test Text File 2.txt"},"This is a Blank Text File.txt":{"html":"\n    <li class=\"file\"><a href=\"#\" file-id=\"This is a Blank Text File.txt\">This is a Blank Text File.txt</a></li>\n","fileType":"file","isDirectory":false,"fileName":"This is a Blank Text File.txt","fullPath":"C:\\Users\\mujtabad\\Desktop\\testtextfiles/This is a Blank Text File.txt"}},
+    "recents":{
+      "count":0,
+      "items":[
+        "C:\\Users\\mujtabad\\Desktop\\testtextfiles","C:\\Users\\mujtabad\\Desktop\\testtextfiles","C:\\Users\\mujtabad\\Desktop\\testtextfiles","C:\\Users\\mujtabad\\Desktop\\testtextfiles"]},
+    "lastOpenFile":""},
+  "tray":{},
+  "tabmenues":{
+    "fileManagerMenu":{}},
+  "toolbar":{},
+  "mainMenu":{}
+}

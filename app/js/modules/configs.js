@@ -1,7 +1,18 @@
+/**
+ * Configuration and storage elements for the app
+ * @author Dena Mujtaba
+ */
+
+//the nw.js library elements
 var gui="";
 
+//the configuration class containing multiple other classes
 var conf = null;
 
+/**
+ * Handles all elements for the application and saving/loading them
+ * @constructor
+ */
 function ConfigElems(){
 
     var that = this;
@@ -14,6 +25,9 @@ function ConfigElems(){
 
 }
 
+/**
+ * constructor
+ */
 ConfigElems.prototype.constructor = function (){
     this.e = {
         mainMenu : {},
@@ -27,6 +41,9 @@ ConfigElems.prototype.constructor = function (){
 
 };
 
+/**
+ * Saves the configuration to a file in JSON format
+ */
 ConfigElems.prototype.saveToFile = function(){
     var that = this;
     that.fs.writeFile(that.fileName, JSON.stringify(
@@ -42,6 +59,9 @@ ConfigElems.prototype.saveToFile = function(){
     ) , function(err) { if(err) return console.log(err); });
 };
 
+/**
+ * Opens the configuration file if there is one. Loaded on app start
+ */
 ConfigElems.prototype.openFromFile = function(){
     var that = this;
     var jqxhr = $.getJSON(that.fileName, function(json) {
@@ -72,6 +92,10 @@ ConfigElems.prototype.openFromFile = function(){
             },
             fileManager : new FileManager('main file manager', tabmenu)
         };
+
+    });
+
+    jqxhr.complete(function(){
 
     });
 };

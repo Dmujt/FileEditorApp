@@ -58,16 +58,23 @@ function FileManager(name, tabmenu, jsonData){
     };
 }
 
-
+/**
+ * Converts the class into JSON format for saving
+ * @returns {{name: *, lastFolderStructure: *, recents: *, lastOpenFile: *, lastOpenFolder: *}}
+ */
 FileManager.prototype.jsonify = function(){
     return {
         name: this.name,
         lastFolderStructure: this.lastFolderStructure,
         recents: this.recents,
-        lastOpenFile: this.lastOpenFile
+        lastOpenFile: this.lastOpenFile,
+        lastOpenFolder: this.lastOpenFolder
     };
 };
 
+/**
+ * constructor
+ */
 FileManager.prototype.constructor = function (jsonData){
     this.fs = require('fs');
     if(jsonData !== undefined){
@@ -77,13 +84,16 @@ FileManager.prototype.constructor = function (jsonData){
         this.lastOpenPath = jsonData.lastOpenPath;
         this.lastFolderStructure = jsonData.lastFolderStructure;
 
-        if(this.lastOpenFile !== ""){
+        if(this.lastOpenPath !== ""){
             this.openFolder(this.lastOpenPath);
         }
     }
 };
 
-
+/**
+ * Opens a folder for a given path
+ * @param folderPath
+ */
 FileManager.prototype.openFolder = function (folderPath){
 
     if(folderPath === undefined || folderPath === {}){
@@ -145,8 +155,11 @@ FileManager.prototype.openFolder = function (folderPath){
     });
 };
 
+/**
+ * Display the name for this element
+ */
 FileManager.prototype.getName = function(){
-    alert('NAME:'+name);
+    console.log('NAME: '+name);
 };
 
 

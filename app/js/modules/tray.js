@@ -1,3 +1,13 @@
+/**
+ * @author Dena Mujtaba
+ */
+
+/**
+ * Button inside the tray for the taskbar
+ * @param name
+ * @param jsonData
+ * @constructor
+ */
 function TrayItem(name, jsonData){
 
     var that = this;
@@ -8,6 +18,10 @@ function TrayItem(name, jsonData){
     that.constructor(jsonData);
 }
 
+/**
+ * constructor
+ * @param jsonData
+ */
 TrayItem.prototype.constructor = function (jsonData) {
 // Create a tray icon
     //get node webkit GUI

@@ -1,5 +1,16 @@
-var templateCache = {};
+/**
+ * Various functions used throughout application
+ * @author Dena Mujtaba
+ */
 
+//contains the previously used templates
+var templateCache = {};
+/**
+ * Loads a template from the given folder/category with id
+ * @param id
+ * @param template_category
+ * @returns {*}
+ */
 function getTemplate(id, template_category){
     var template = "";
 
@@ -18,6 +29,9 @@ function getTemplate(id, template_category){
     }
 }
 
+/**
+ * Opens the folder selection dialog, returns a path for that folder
+ */
 function openFolderDialog() {
     var inputField = document.querySelector('#folderSelector');
     inputField.addEventListener('change', function () {

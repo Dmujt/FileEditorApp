@@ -16,6 +16,11 @@ function MenuBar(name, jsonData){
     that.constructor(gui, jsonData);
 }
 
+/**
+ * constructor
+ * @param gui
+ * @param jsonData
+ */
 MenuBar.prototype.constructor = function (gui, jsonData){
 
     // get the window object
@@ -26,7 +31,6 @@ MenuBar.prototype.constructor = function (gui, jsonData){
     });
 
     var file = new gui.Menu();
-    var subMenu = new gui.Menu();
     file.append(new gui.MenuItem({
         label: 'New',
         click: function() {
@@ -41,21 +45,22 @@ MenuBar.prototype.constructor = function (gui, jsonData){
         }
     }));
 
-    subMenu.append(new gui.MenuItem({
-        label: 'Project 1',
-        click: function() {
-            alert('Project 1 Clicked');
-        }
-    }));
+    if(jsonData !== undefined){
 
-    subMenu.append(new gui.MenuItem({
-        label: 'Project 2',
-        click: function() {
-            alert('Project 2 Clicked');
-        }
-    }));
+    }
 
-    file.append(new gui.MenuItem({ label: 'Open Recent', submenu: subMenu}));
+    if(conf.e.fileManager !== undefined && conf.e.fileManager.recents.count > 0 ){
+        var subMenu = new gui.Menu();
+        $.each(conf.e.fileManager.recents.items, function(index,path) {
+            subMenu.append(new gui.MenuItem({
+                label: path,
+                click: function() {
+                    conf.e.fileManager.openFolder(path);
+                }
+            }));
+        });
+        file.append(new gui.MenuItem({ label: 'Open Recent', submenu: subMenu}));
+    }
 
     file.append(new gui.MenuItem({
         label: 'Save',
@@ -64,10 +69,6 @@ MenuBar.prototype.constructor = function (gui, jsonData){
         }
     }));
 
-    if(jsonData !== undefined){
-
-    }
-
     menubar.append(new gui.MenuItem({ label: 'File', submenu: file}));
     menubar.append(new gui.MenuItem({ label: 'Edit', submenu: new gui.Menu()}));
     menubar.append(new gui.MenuItem({ label: 'Help', submenu: new gui.Menu()}));
@@ -75,8 +76,10 @@ MenuBar.prototype.constructor = function (gui, jsonData){
     win.menu = menubar;
 };
 
-
+/**
+ * Display the name for this element
+ */
 MenuBar.prototype.getName = function(){
-    alert('NAME:'+name);
+    console.log('NAME: '+name);
 };
 

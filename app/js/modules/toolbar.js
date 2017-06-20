@@ -1,4 +1,8 @@
 /**
+ * @author Dena Mujtaba
+ */
+
+/**
  * Class to handle the elements inside the top toolbar
  * @param name
  * @param divId
@@ -14,6 +18,10 @@ function ToolBar(name, divId, jsonData){
     that.constructor(jsonData);
 }
 
+/**
+ * constructor
+ * @param jsonData
+ */
 ToolBar.prototype.constructor = function (jsonData) {
     var template = getTemplate("toolbar_template", "toolbar.html");
     var html = Mustache.to_html(template,

@@ -18,17 +18,27 @@ function TabMenu(name, divId, jsonData){
     that.constructor(jsonData);
 }
 
+/**
+ * constructor
+ * @param jsonData
+ */
 TabMenu.prototype.constructor = function (jsonData){
     if(jsonData !== undefined){
 
     }
 };
 
-
+/**
+ * Display the name for this element
+ */
 TabMenu.prototype.getName = function(){
-    alert('NAME: '+name);
+    console.log('NAME: '+name);
 };
 
+/**
+ * Sets the HTML for the tab menu
+ * @param content
+ */
 TabMenu.prototype.setHTML = function(content){
     this.container.html(content);
 };

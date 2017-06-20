@@ -1,3 +1,8 @@
+/**
+ * Application Start
+ * @author Dena Mujtaba
+ */
+
 $(document).ready(function(){
     gui = require('nw.gui');
 
@@ -10,9 +15,10 @@ $(document).ready(function(){
         // Hide the window to give user the feeling of closing immediately
         this.hide();
 
+        //Save the configurations
         conf.saveToFile();
 
-        // After closing the new window, close the Zmain window.
+        // After closing the new window, close the main window.
         this.close(true);
     });
 

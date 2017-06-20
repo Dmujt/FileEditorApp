@@ -687,7 +687,8 @@ FileManager.prototype.jsonify = function(){
         name: this.name,
         lastFolderStructure: this.lastFolderStructure,
         recents: this.recents,
-        lastOpenFile: this.lastOpenFile
+        lastOpenFile: this.lastOpenFile,
+        lastOpenFolder: this.lastOpenFolder
     };
 };
 
@@ -700,7 +701,7 @@ FileManager.prototype.constructor = function (jsonData){
         this.lastOpenPath = jsonData.lastOpenPath;
         this.lastFolderStructure = jsonData.lastFolderStructure;
 
-        if(this.lastOpenFile !== ""){
+        if(this.lastOpenPath !== ""){
             this.openFolder(this.lastOpenPath);
         }
     }
@@ -850,7 +851,6 @@ MenuBar.prototype.constructor = function (gui, jsonData){
     });
 
     var file = new gui.Menu();
-    var subMenu = new gui.Menu();
     file.append(new gui.MenuItem({
         label: 'New',
         click: function() {
@@ -865,21 +865,23 @@ MenuBar.prototype.constructor = function (gui, jsonData){
         }
     }));
 
-    subMenu.append(new gui.MenuItem({
-        label: 'Project 1',
-        click: function() {
-            alert('Project 1 Clicked');
-        }
-    }));
+    if(jsonData !== undefined){
 
-    subMenu.append(new gui.MenuItem({
-        label: 'Project 2',
-        click: function() {
-            alert('Project 2 Clicked');
-        }
-    }));
+    }
 
-    file.append(new gui.MenuItem({ label: 'Open Recent', submenu: subMenu}));
+    if(conf.e.fileManager.recents.count > 0 ){
+        var subMenu = new gui.Menu();
+        $.each(conf.e.fileManager.recents.items, function(index,path) {
+            subMenu.append(new gui.MenuItem({
+                label: path,
+                click: function() {
+                    conf.e.fileManager.openFolder(path);
+                }
+            }));
+        });
+        file.append(new gui.MenuItem({ label: 'Open Recent', submenu: subMenu}));
+
+    }
 
     file.append(new gui.MenuItem({
         label: 'Save',
@@ -887,10 +889,6 @@ MenuBar.prototype.constructor = function (gui, jsonData){
             conf.saveToFile();
         }
     }));
-
-    if(jsonData !== undefined){
-
-    }
 
     menubar.append(new gui.MenuItem({ label: 'File', submenu: file}));
     menubar.append(new gui.MenuItem({ label: 'Edit', submenu: new gui.Menu()}));
