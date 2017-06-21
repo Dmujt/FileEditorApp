@@ -69,7 +69,7 @@ ConfigElems.prototype.openFromFile = function(){
 
     var jqxhr = $.getJSON(that.fileName, function(json) {
 
-        var tabmenu = new TabMenu('name', '#folder-options-menu', json.toolbar);
+        var tabmenu = new TabMenu('name', '#folder-tabmenu', json.toolbar);
 
         that.e = {
             mainMenu : new MenuBar('mainmenu', json.mainMenu),
@@ -87,7 +87,7 @@ ConfigElems.prototype.openFromFile = function(){
     jqxhr.fail(function() {
         console.log( "No Config File Found" );
 
-        var tabmenu = new TabMenu('name', '#folder-options-menu');
+        var tabmenu = new TabMenu('name', '#folder-tabmenu');
 
         that.e = {
             mainMenu : new MenuBar('mainmenu'),

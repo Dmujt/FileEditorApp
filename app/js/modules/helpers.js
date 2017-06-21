@@ -41,4 +41,16 @@ function openFolderDialog() {
     inputField.click();
 }
 
+/**
+ * Displays the notification modal and fills with the given text
+ * @param headerText
+ * @param bodyContent
+ */
+function displayNotification(headerText, bodyContent){
+    $('#notificationModal .modal-title').text(headerText);
+    $('#notificationModal .modal-body-content').text(bodyContent);
+
+    $('#notificationModal').modal('show');
+}
+
 

@@ -6,7 +6,7 @@
 
   "window": {
     "icon": "img/logo.png",
-    "toolbar": true,
+    "toolbar": false,
     "show": true,
     "width": 1280,
     "height": 800

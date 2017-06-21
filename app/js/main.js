@@ -615,7 +615,7 @@ ConfigElems.prototype.openFromFile = function(){
 
     var jqxhr = $.getJSON(that.fileName, function(json) {
 
-        var tabmenu = new TabMenu('name', '#folder-options-menu', json.toolbar);
+        var tabmenu = new TabMenu('name', '#folder-tabmenu', json.toolbar);
 
         that.e = {
             mainMenu : new MenuBar('mainmenu', json.mainMenu),
@@ -633,7 +633,7 @@ ConfigElems.prototype.openFromFile = function(){
     jqxhr.fail(function() {
         console.log( "No Config File Found" );
 
-        var tabmenu = new TabMenu('name', '#folder-options-menu');
+        var tabmenu = new TabMenu('name', '#folder-tabmenu');
 
         that.e = {
             mainMenu : new MenuBar('mainmenu'),
@@ -694,7 +694,9 @@ function FileManager(name, tabmenu, jsonData){
             if($(e.target).attr('back-dir')){
 
                 var newpath = $(e.target).attr('file-id').split(/[\\/]+/).slice(0,-1).join('/');
-                that.openFolder(newpath);
+                if(newpath !== undefined && newpath !== ""){
+                    that.openFolder(newpath);
+                }
 
             }else{
                 var item = that.lastFolderStructure[$(this).attr('file-id')];
@@ -777,14 +779,18 @@ FileManager.prototype.openFolder = function (folderPath, init){
 
     // Dependencies
     var that = this;
-    that.lastOpenFolder = folderPath;
-
-    if(init !== true){
-        that.setNewRecent(folderPath);
-    }
 
     that.fs.readdir(folderPath,function(err,files) {
-        if (err) throw err;
+        if (err){
+            displayNotification('Error Opening File', err);
+            return;
+        }
+
+        that.lastOpenFolder = folderPath;
+
+        if(init !== true){
+            that.setNewRecent(folderPath);
+        }
 
         var htmlTotal=" ";
         var html = "";
@@ -897,6 +903,18 @@ function openFolderDialog() {
         conf.e.fileManager.openFolder(folderPath);
     }, false);
     inputField.click();
+}
+
+/**
+ * Displays the notification modal and fills with the given text
+ * @param headerText
+ * @param bodyContent
+ */
+function displayNotification(headerText, bodyContent){
+    $('#notificationModal .modal-title').text(headerText);
+    $('#notificationModal .modal-body-content').text(bodyContent);
+
+    $('#notificationModal').modal('show');
 }
 
 
@@ -1058,6 +1076,8 @@ function TabMenu(name, divId, jsonData){
 
     var that = this;
     this.container = $(divId);
+    this.contentContainer = $(divId + ' .tab-area');
+    this.navbarContainer = $(divId + ' .tab-menu');
     this.name = name;
 
     that.constructor(jsonData);
@@ -1071,6 +1091,14 @@ TabMenu.prototype.constructor = function (jsonData){
     if(jsonData !== undefined){
 
     }
+    this.setClickHandlers();
+};
+
+TabMenu.prototype.setClickHandlers = function(){
+    var that = this;
+    that.navbarContainer.find('a.collapse-tabmenu').click(function(e){
+        $(e.target).parent().parent().parent().toggleClass('min');
+    });
 };
 
 /**
@@ -1085,7 +1113,7 @@ TabMenu.prototype.getName = function(){
  * @param content
  */
 TabMenu.prototype.setHTML = function(content){
-    this.container.html(content);
+    this.contentContainer.html(content);
 };
 
 

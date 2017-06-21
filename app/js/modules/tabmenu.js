@@ -13,6 +13,8 @@ function TabMenu(name, divId, jsonData){
 
     var that = this;
     this.container = $(divId);
+    this.contentContainer = $(divId + ' .tab-area');
+    this.navbarContainer = $(divId + ' .tab-menu');
     this.name = name;
 
     that.constructor(jsonData);
@@ -26,6 +28,14 @@ TabMenu.prototype.constructor = function (jsonData){
     if(jsonData !== undefined){
 
     }
+    this.setClickHandlers();
+};
+
+TabMenu.prototype.setClickHandlers = function(){
+    var that = this;
+    that.navbarContainer.find('a.collapse-tabmenu').click(function(e){
+        $(e.target).parent().parent().parent().toggleClass('min');
+    });
 };
 
 /**
@@ -40,7 +50,7 @@ TabMenu.prototype.getName = function(){
  * @param content
  */
 TabMenu.prototype.setHTML = function(content){
-    this.container.html(content);
+    this.contentContainer.html(content);
 };
 
 

@@ -11,14 +11,14 @@
 
 <div class="container-fluid" id="main-content-area">
     <div class="row  window-container">
-        <div class="col col-md-3 col-sm-3">
-            <div class="tab-wrapper tab-half">
+        <div class="col col-md-3 col-sm-3 flexible">
+            <div class="tab-wrapper tab-half" id="folder-tabmenu">
                 <div class="tab-menu">
                     <span class="tagname">Project</span>
                     <a href="#" class="red">
                         <i class="glyphicon glyphicon-remove-sign"></i>
                     </a>
-                    <a href="#" class="orange">
+                    <a href="#" class="orange collapse-tabmenu" >
                         <i class="glyphicon glyphicon-minus-sign"></i>
                     </a>
                     <a href="#" class="green">
@@ -45,6 +45,9 @@
                         <i class="glyphicon glyphicon-info-sign"></i>
                     </a>
                 </div>
+                <div class="tab-area" >
+
+                </div>
             </div>
         </div>
         <div class="col col-md-9 col-sm-9">
@@ -61,7 +64,7 @@
                         <i class="glyphicon glyphicon-info-sign"></i>
                     </a>
                 </div>
-                <div class="tab-area">
+                <div class="tab-area" >
                     <div id="folder-content-area">
 
                     </div>
@@ -72,8 +75,32 @@
 
 </div>
 
-
 </body>
+<!-- Modal -->
+<div id="notificationModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-sm">
+
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <a type="button"  data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i></a>
+                <h4 class="modal-title">Error Text Here</h4>
+            </div>
+            <div class="modal-body">
+                <p class="modal-body-content">
+
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
 <div id="template_container"></div>
 
 <input type="file" nwdirectory id="folderSelector" class="hideme"/>

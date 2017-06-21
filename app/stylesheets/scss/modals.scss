@@ -1,0 +1,69 @@
+.modal-backdrop {
+  background: none;
+}
+
+.modal .modal-content{
+  margin-top:$toolbar-height + 5px;
+  outline:0;
+  border-radius:0;
+  box-shadow:5px 6px 3px rgba($blue-300,.4);
+  background-color:$tab-col;
+  border:2px solid darken($tab-col, 15%);
+  .modal-header{
+    padding:$beat/2 $beat;
+    .modal-title{
+      font-size:12px;
+      color:white;
+    }
+    a{
+      display:inline-block;
+      float:right;
+      margin:0 $beat/4;
+      font-size:9px;
+      background-color:$red-100;
+      border-radius:100%;
+      color:$blue-300;
+      height:$beat*1.5;
+      width:$beat*1.5;
+      padding:$beat/5 $beat/3;
+      box-shadow:2px 0px 0px 0px $blue-300;
+      font-weight:bolder;
+      &:hover, &:focus{
+        background-color:$gray-200;
+        cursor:pointer;
+      }
+      &:active{
+        i{
+          box-shadow:0px 0px 0px 0px $blue-300;
+        }
+      }
+    }
+    border-bottom:2px solid darken($tab-col, 15%);
+  }
+
+  .modal-body{
+    font-size:12px;
+    color:$gray-100;
+
+    border-bottom:2px solid darken($tab-col, 15%);
+    padding:0;
+    p{
+      padding:$beat $beat*2;
+    }
+  }
+  .modal-footer{
+    text-align:center;
+    border-top:0;
+    padding:0;
+    button,a{
+      margin:$beat;
+      padding:$beat/4 $beat*1.5;
+      transition:background-color .5s, border .5s;
+      &:hover{
+        background-color:$red-100;
+        border:1px solid $red-100;
+      }
+    }
+  }
+
+}

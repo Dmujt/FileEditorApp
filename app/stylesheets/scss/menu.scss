@@ -14,7 +14,20 @@
       margin:0;
       height:100%;
       padding:0;
-      display:block;
+      display: block;
+      &.flexible{
+        display: flex;
+        flex-direction: column;
+        .tab-wrapper{
+          flex:1;
+          &.min{
+            flex:0;
+            .tab-area{
+              height:0 !important;
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -85,6 +98,7 @@
   &.tab-half{
     height:50% - $tab-seperator-height/2;
   }
+
 }
 
 .tab-seperator{
@@ -152,7 +166,7 @@ ul.folder-nav{
       }
 
     }
-    &.opened a{
+    &.opened a[back-dir="true"]{
       &:before{
         content:'\e118';
       }

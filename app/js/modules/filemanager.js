@@ -43,7 +43,9 @@ function FileManager(name, tabmenu, jsonData){
             if($(e.target).attr('back-dir')){
 
                 var newpath = $(e.target).attr('file-id').split(/[\\/]+/).slice(0,-1).join('/');
-                that.openFolder(newpath);
+                if(newpath !== undefined && newpath !== ""){
+                    that.openFolder(newpath);
+                }
 
             }else{
                 var item = that.lastFolderStructure[$(this).attr('file-id')];
@@ -126,14 +128,18 @@ FileManager.prototype.openFolder = function (folderPath, init){
 
     // Dependencies
     var that = this;
-    that.lastOpenFolder = folderPath;
-
-    if(init !== true){
-        that.setNewRecent(folderPath);
-    }
 
     that.fs.readdir(folderPath,function(err,files) {
-        if (err) throw err;
+        if (err){
+            displayNotification('Error Opening File', err);
+            return;
+        }
+
+        that.lastOpenFolder = folderPath;
+
+        if(init !== true){
+            that.setNewRecent(folderPath);
+        }
 
         var htmlTotal=" ";
         var html = "";
