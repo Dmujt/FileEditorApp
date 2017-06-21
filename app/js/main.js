@@ -544,10 +544,24 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
   };
 
 }));
- var gui="";
+ /**
+ * Configuration and storage elements for the app
+ * @author Dena Mujtaba
+ */
 
+//the nw.js library elements
+var gui="";
+
+//the configuration class containing multiple other classes
 var conf = null;
 
+//the main window for the application
+var win = null;
+
+/**
+ * Handles all elements for the application and saving/loading them
+ * @constructor
+ */
 function ConfigElems(){
 
     var that = this;
@@ -560,6 +574,9 @@ function ConfigElems(){
 
 }
 
+/**
+ * constructor
+ */
 ConfigElems.prototype.constructor = function (){
     this.e = {
         mainMenu : {},
@@ -573,6 +590,9 @@ ConfigElems.prototype.constructor = function (){
 
 };
 
+/**
+ * Saves the configuration to a file in JSON format
+ */
 ConfigElems.prototype.saveToFile = function(){
     var that = this;
     that.fs.writeFile(that.fileName, JSON.stringify(
@@ -588,8 +608,13 @@ ConfigElems.prototype.saveToFile = function(){
     ) , function(err) { if(err) return console.log(err); });
 };
 
+/**
+ * Opens the configuration file if there is one. Loaded on app start
+ */
 ConfigElems.prototype.openFromFile = function(){
+
     var that = this;
+
     var jqxhr = $.getJSON(that.fileName, function(json) {
 
         var tabmenu = new TabMenu('name', '#folder-options-menu', json.toolbar);
@@ -603,7 +628,10 @@ ConfigElems.prototype.openFromFile = function(){
             },
             fileManager : new FileManager('main file manager', tabmenu, json.fileManager)
         };
+        $(document).trigger('confSetupComplete');
+
     });
+
     jqxhr.fail(function() {
         console.log( "No Config File Found" );
 
@@ -618,8 +646,10 @@ ConfigElems.prototype.openFromFile = function(){
             },
             fileManager : new FileManager('main file manager', tabmenu)
         };
+        $(document).trigger('confSetupComplete');
 
     });
+
 };
  /**
  * Created by mujtabad on 6/14/2017.
@@ -639,7 +669,7 @@ function FileManager(name, tabmenu, jsonData){
     this.tabMenu = tabmenu;
     this.lastFolderStructure = {};
     this.lastOpenFile = "";
-    this.lastOpenPath = "";
+    this.lastOpenFolder = "";
     this.recents = {
         count:0,
         items: []
@@ -651,7 +681,7 @@ function FileManager(name, tabmenu, jsonData){
     this.setNewRecent = function(pathval){
         if (this.recents.count < 5){
             this.recents.items.unshift(pathval);
-
+            this.recents.count ++;
         }else{
             //replace the first, reset the count
             this.recents.items.unshift(pathval);
@@ -661,27 +691,46 @@ function FileManager(name, tabmenu, jsonData){
 
     this.setClickHandlers = function(){
         var that = this;
-        $('.folder-nav li a').click(function(){
+        $('.folder-nav li a').click(function(e){
             conf.saveToFile();
-
-            var item = that.lastFolderStructure[$(this).attr('file-id')];
-            if(item.isDirectory){
-                //open the folder
-                that.openFolder(item.fullPath);
+            if($(e.target).attr('back-dir')){
+                that.openFolder($(e.target).attr('file-id'));
             }else{
-            //open the file itself
-                var client = new XMLHttpRequest();
-                client.open('GET', item.fullPath);
-                client.onreadystatechange = function() {
-                    $('#folder-content-area').html(client.responseText);
-                };
-                client.send();
+                var item = that.lastFolderStructure[$(this).attr('file-id')];
+                if(item.isDirectory){
+                    //open the folder
+                    that.openFolder(item.fullPath);
+                }else{
+                    //open the file itself
+                    that.openFile(item);
+                }
             }
+
         });
     };
 }
 
+/**
+ * Opens the file an displays it in the editor area
+ * @param item Object containing path to the file
+ */
+FileManager.prototype.openFile = function(item){
+    if(item === undefined || item === {}){
+        return;
+    }
+    var client = new XMLHttpRequest();
+    this.lastOpenFile = item.fileName;
+    client.open('GET', item.fullPath);
+    client.onreadystatechange = function() {
+        $('#folder-content-area').html(client.responseText);
+    };
+    client.send();
+};
 
+/**
+ * Converts the class into JSON format for saving
+ * @returns {{name: *, lastFolderStructure: *, recents: *, lastOpenFile: *, lastOpenFolder: *}}
+ */
 FileManager.prototype.jsonify = function(){
     return {
         name: this.name,
@@ -692,23 +741,34 @@ FileManager.prototype.jsonify = function(){
     };
 };
 
+/**
+ * constructor
+ */
 FileManager.prototype.constructor = function (jsonData){
     this.fs = require('fs');
     if(jsonData !== undefined){
         this.recents = jsonData.recents;
         this.name = jsonData.name;
         this.lastOpenFile = jsonData.lastOpenFile;
-        this.lastOpenPath = jsonData.lastOpenPath;
+        this.lastOpenFolder = jsonData.lastOpenFolder;
         this.lastFolderStructure = jsonData.lastFolderStructure;
 
-        if(this.lastOpenPath !== ""){
-            this.openFolder(this.lastOpenPath);
+        if(this.lastOpenFolder !== ""){
+
+            this.openFolder(this.lastOpenFolder, true);
+            if(this.lastOpenFile !== ""){
+                this.openFile(this.lastFolderStructure[this.lastOpenFile]);
+            }
         }
     }
 };
 
-
-FileManager.prototype.openFolder = function (folderPath){
+/**
+ * Opens a folder for a given path
+ * @param folderPath
+ * @param init
+ */
+FileManager.prototype.openFolder = function (folderPath, init){
 
     if(folderPath === undefined || folderPath === {}){
         return;
@@ -716,15 +776,19 @@ FileManager.prototype.openFolder = function (folderPath){
 
     // Dependencies
     var that = this;
-    that.lastOpenPath = folderPath;
+    that.lastOpenFolder = folderPath;
 
-    that.setNewRecent(folderPath);
+    if(init !== true){
+        that.setNewRecent(folderPath);
+    }
+
     that.fs.readdir(folderPath,function(err,files) {
         if (err) throw err;
 
         var htmlTotal=" ";
         var html = "";
         var template = "";
+        that.lastFolderStructure = {}; //clear the previously opened files
 
         files.forEach(function (file) {
             that.fs.stat(folderPath + "/" + file, function(err, statType){
@@ -760,7 +824,19 @@ FileManager.prototype.openFolder = function (folderPath){
                         fullPath: folderPath + "/" + file
                     };
                 }
-                that.tabMenu.setHTML('<ul class="folder-nav">'+ htmlTotal+'</ul>');
+
+                //set the directory structure
+                template = getTemplate("folder_item_template", "files.html");
+                var html_folder_wrapper = Mustache.to_html(template,
+                    {
+                        fileId: folderPath,
+                        foldername: folderPath,
+                        foldercontents: htmlTotal,
+                        dir: true,
+                        open: 'opened'
+                    });
+
+                that.tabMenu.setHTML('<ul class="folder-nav">'+ html_folder_wrapper+'</ul>');
                 that.setClickHandlers();
             });
 
@@ -769,13 +845,27 @@ FileManager.prototype.openFolder = function (folderPath){
     });
 };
 
+/**
+ * Display the name for this element
+ */
 FileManager.prototype.getName = function(){
-    alert('NAME:'+name);
+    console.log('NAME: '+name);
 };
 
 
- var templateCache = {};
+ /**
+ * Various functions used throughout application
+ * @author Dena Mujtaba
+ */
 
+//contains the previously used templates
+var templateCache = {};
+/**
+ * Loads a template from the given folder/category with id
+ * @param id
+ * @param template_category
+ * @returns {*}
+ */
 function getTemplate(id, template_category){
     var template = "";
 
@@ -794,6 +884,9 @@ function getTemplate(id, template_category){
     }
 }
 
+/**
+ * Opens the folder selection dialog, returns a path for that folder
+ */
 function openFolderDialog() {
     var inputField = document.querySelector('#folderSelector');
     inputField.addEventListener('change', function () {
@@ -804,24 +897,39 @@ function openFolderDialog() {
 }
 
 
- $(document).ready(function(){
+ /**
+ * Application Start
+ * @author Dena Mujtaba
+ */
+
+$(document).ready(function(){
     gui = require('nw.gui');
+
+    // get the window object
+    win = gui.Window.get();
 
     conf = new ConfigElems();
 
     conf.openFromFile();
 
     // Listen to main window's close event
-    gui.Window.get().on('close', function() {
+    win.on('close', function() {
         // Hide the window to give user the feeling of closing immediately
         this.hide();
 
+        //Save the configurations
         conf.saveToFile();
 
-        // After closing the new window, close the Zmain window.
+        // After closing the new window, close the main window.
         this.close(true);
     });
 
+});
+
+//Listen for handler once the configs area setup/ loaded from files
+$(document).on('confSetupComplete',function(){
+    console.log('Configurations Loaded');
+    conf.e.mainMenu.loadFromConfigs();
 });
  /**
  * Created by mujtabad on 6/14/2017.
@@ -837,28 +945,34 @@ function MenuBar(name, jsonData){
 
     var that = this;
     this.name = name;
+    this.menubar = null;
+    this.menus = {};
 
     that.constructor(gui, jsonData);
 }
 
+/**
+ * constructor
+ * @param gui
+ * @param jsonData
+ */
 MenuBar.prototype.constructor = function (gui, jsonData){
 
-    // get the window object
-    var win = gui.Window.get();
+    var that = this;
 
-    var menubar = new gui.Menu({
+    that.menubar = new gui.Menu({
         type: 'menubar'
     });
 
-    var file = new gui.Menu();
-    file.append(new gui.MenuItem({
+    that.menus.file =  new gui.Menu();
+    that.menus.file.append(new gui.MenuItem({
         label: 'New',
         click: function() {
             alert('Clicked New');
         }
     }));
 
-    file.append(new gui.MenuItem({
+    that.menus.file.append(new gui.MenuItem({
         label: 'Open',
         click: function() {
             openFolderDialog();
@@ -869,37 +983,61 @@ MenuBar.prototype.constructor = function (gui, jsonData){
 
     }
 
-    if(conf.e.fileManager.recents.count > 0 ){
-        var subMenu = new gui.Menu();
-        $.each(conf.e.fileManager.recents.items, function(index,path) {
-            subMenu.append(new gui.MenuItem({
-                label: path,
-                click: function() {
-                    conf.e.fileManager.openFolder(path);
-                }
-            }));
-        });
-        file.append(new gui.MenuItem({ label: 'Open Recent', submenu: subMenu}));
 
-    }
-
-    file.append(new gui.MenuItem({
+    that.menus.file.append(new gui.MenuItem({
         label: 'Save',
         click: function() {
             conf.saveToFile();
         }
     }));
 
-    menubar.append(new gui.MenuItem({ label: 'File', submenu: file}));
-    menubar.append(new gui.MenuItem({ label: 'Edit', submenu: new gui.Menu()}));
-    menubar.append(new gui.MenuItem({ label: 'Help', submenu: new gui.Menu()}));
+    that.menubar.append(new gui.MenuItem({ label: 'File', submenu: that.menus.file}));
+    that.menubar.append(new gui.MenuItem({ label: 'Edit', submenu: new gui.Menu()}));
+    that.menubar.append(new gui.MenuItem({ label: 'Help', submenu: new gui.Menu()}));
 
-    win.menu = menubar;
+    //Actual menu is not set until after the configurations file is loaded
+};
+
+/**
+ * Load the data from the configuration object to modify this object
+ */
+MenuBar.prototype.loadFromConfigs = function(){
+
+    if(conf.e.fileManager !== undefined){
+        if( conf.e.fileManager.recents.count > 0 ){
+            var subMenu = new gui.Menu();
+            $.each(conf.e.fileManager.recents.items, function(index,path) {
+                subMenu.append(new gui.MenuItem({
+                    label: path,
+                    click: function() {
+                        conf.e.fileManager.openFolder(path);
+                    }
+                }));
+            });
+            this.menus.file.append(new gui.MenuItem({ label: 'Open Recent', submenu: subMenu}));
+
+            //Set the menu to display information
+
+        }
+    }
+    this.resetMenu();
+
+};
+
+/**
+ * Reset the MenuItems and display the menu
+ */
+MenuBar.prototype.resetMenu = function(){
+    win.menu = this.menubar;
+
 };
 
 
+/**
+ * Display the name for this element
+ */
 MenuBar.prototype.getName = function(){
-    alert('NAME:'+name);
+    console.log('NAME: '+name);
 };
 
  /**
@@ -922,23 +1060,37 @@ function TabMenu(name, divId, jsonData){
     that.constructor(jsonData);
 }
 
+/**
+ * constructor
+ * @param jsonData
+ */
 TabMenu.prototype.constructor = function (jsonData){
     if(jsonData !== undefined){
 
     }
 };
 
-
+/**
+ * Display the name for this element
+ */
 TabMenu.prototype.getName = function(){
-    alert('NAME: '+name);
+    console.log('NAME: '+name);
 };
 
+/**
+ * Sets the HTML for the tab menu
+ * @param content
+ */
 TabMenu.prototype.setHTML = function(content){
     this.container.html(content);
 };
 
 
  /**
+ * @author Dena Mujtaba
+ */
+
+/**
  * Class to handle the elements inside the top toolbar
  * @param name
  * @param divId
@@ -954,6 +1106,10 @@ function ToolBar(name, divId, jsonData){
     that.constructor(jsonData);
 }
 
+/**
+ * constructor
+ * @param jsonData
+ */
 ToolBar.prototype.constructor = function (jsonData) {
     var template = getTemplate("toolbar_template", "toolbar.html");
     var html = Mustache.to_html(template,
@@ -965,7 +1121,17 @@ ToolBar.prototype.constructor = function (jsonData) {
     if(jsonData !== undefined){
 
     }
-}; function TrayItem(name, jsonData){
+}; /**
+ * @author Dena Mujtaba
+ */
+
+/**
+ * Button inside the tray for the taskbar
+ * @param name
+ * @param jsonData
+ * @constructor
+ */
+function TrayItem(name, jsonData){
 
     var that = this;
     this.name = name;
@@ -975,6 +1141,10 @@ ToolBar.prototype.constructor = function (jsonData) {
     that.constructor(jsonData);
 }
 
+/**
+ * constructor
+ * @param jsonData
+ */
 TrayItem.prototype.constructor = function (jsonData) {
 // Create a tray icon
     //get node webkit GUI

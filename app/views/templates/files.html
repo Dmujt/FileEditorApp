@@ -21,12 +21,12 @@
 </script>
 
 <script id="folder_item_template" type="text/template">
-    <li class="">
-        <a href="#"  file-id="{{fileId}}">
+    <li class="{{open}}">
+        <a href="#"  file-id="{{fileId}}" back-dir="{{dir}}">
             {{foldername}}
         </a>
         <ul  folder-id="{{fileId}}">
-            {{foldercontents}}
+            {{{foldercontents}}}
         </ul>
     </li>
 </script>

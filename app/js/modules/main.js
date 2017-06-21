@@ -6,12 +6,15 @@
 $(document).ready(function(){
     gui = require('nw.gui');
 
+    // get the window object
+    win = gui.Window.get();
+
     conf = new ConfigElems();
 
     conf.openFromFile();
 
     // Listen to main window's close event
-    gui.Window.get().on('close', function() {
+    win.on('close', function() {
         // Hide the window to give user the feeling of closing immediately
         this.hide();
 
@@ -22,4 +25,10 @@ $(document).ready(function(){
         this.close(true);
     });
 
+});
+
+//Listen for handler once the configs area setup/ loaded from files
+$(document).on('confSetupComplete',function(){
+    console.log('Configurations Loaded');
+    conf.e.mainMenu.loadFromConfigs();
 });

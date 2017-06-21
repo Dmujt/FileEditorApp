@@ -16,7 +16,7 @@ function FileManager(name, tabmenu, jsonData){
     this.tabMenu = tabmenu;
     this.lastFolderStructure = {};
     this.lastOpenFile = "";
-    this.lastOpenPath = "";
+    this.lastOpenFolder = "";
     this.recents = {
         count:0,
         items: []
@@ -28,7 +28,7 @@ function FileManager(name, tabmenu, jsonData){
     this.setNewRecent = function(pathval){
         if (this.recents.count < 5){
             this.recents.items.unshift(pathval);
-
+            this.recents.count ++;
         }else{
             //replace the first, reset the count
             this.recents.items.unshift(pathval);
@@ -38,25 +38,41 @@ function FileManager(name, tabmenu, jsonData){
 
     this.setClickHandlers = function(){
         var that = this;
-        $('.folder-nav li a').click(function(){
+        $('.folder-nav li a').click(function(e){
             conf.saveToFile();
-
-            var item = that.lastFolderStructure[$(this).attr('file-id')];
-            if(item.isDirectory){
-                //open the folder
-                that.openFolder(item.fullPath);
+            if($(e.target).attr('back-dir')){
+                that.openFolder($(e.target).attr('file-id'));
             }else{
-            //open the file itself
-                var client = new XMLHttpRequest();
-                client.open('GET', item.fullPath);
-                client.onreadystatechange = function() {
-                    $('#folder-content-area').html(client.responseText);
-                };
-                client.send();
+                var item = that.lastFolderStructure[$(this).attr('file-id')];
+                if(item.isDirectory){
+                    //open the folder
+                    that.openFolder(item.fullPath);
+                }else{
+                    //open the file itself
+                    that.openFile(item);
+                }
             }
+
         });
     };
 }
+
+/**
+ * Opens the file an displays it in the editor area
+ * @param item Object containing path to the file
+ */
+FileManager.prototype.openFile = function(item){
+    if(item === undefined || item === {}){
+        return;
+    }
+    var client = new XMLHttpRequest();
+    this.lastOpenFile = item.fileName;
+    client.open('GET', item.fullPath);
+    client.onreadystatechange = function() {
+        $('#folder-content-area').html(client.responseText);
+    };
+    client.send();
+};
 
 /**
  * Converts the class into JSON format for saving
@@ -81,11 +97,15 @@ FileManager.prototype.constructor = function (jsonData){
         this.recents = jsonData.recents;
         this.name = jsonData.name;
         this.lastOpenFile = jsonData.lastOpenFile;
-        this.lastOpenPath = jsonData.lastOpenPath;
+        this.lastOpenFolder = jsonData.lastOpenFolder;
         this.lastFolderStructure = jsonData.lastFolderStructure;
 
-        if(this.lastOpenPath !== ""){
-            this.openFolder(this.lastOpenPath);
+        if(this.lastOpenFolder !== ""){
+
+            this.openFolder(this.lastOpenFolder, true);
+            if(this.lastOpenFile !== ""){
+                this.openFile(this.lastFolderStructure[this.lastOpenFile]);
+            }
         }
     }
 };
@@ -93,8 +113,9 @@ FileManager.prototype.constructor = function (jsonData){
 /**
  * Opens a folder for a given path
  * @param folderPath
+ * @param init
  */
-FileManager.prototype.openFolder = function (folderPath){
+FileManager.prototype.openFolder = function (folderPath, init){
 
     if(folderPath === undefined || folderPath === {}){
         return;
@@ -102,15 +123,19 @@ FileManager.prototype.openFolder = function (folderPath){
 
     // Dependencies
     var that = this;
-    that.lastOpenPath = folderPath;
+    that.lastOpenFolder = folderPath;
 
-    that.setNewRecent(folderPath);
+    if(init !== true){
+        that.setNewRecent(folderPath);
+    }
+
     that.fs.readdir(folderPath,function(err,files) {
         if (err) throw err;
 
         var htmlTotal=" ";
         var html = "";
         var template = "";
+        that.lastFolderStructure = {}; //clear the previously opened files
 
         files.forEach(function (file) {
             that.fs.stat(folderPath + "/" + file, function(err, statType){
@@ -146,7 +171,19 @@ FileManager.prototype.openFolder = function (folderPath){
                         fullPath: folderPath + "/" + file
                     };
                 }
-                that.tabMenu.setHTML('<ul class="folder-nav">'+ htmlTotal+'</ul>');
+
+                //set the directory structure
+                template = getTemplate("folder_item_template", "files.html");
+                var html_folder_wrapper = Mustache.to_html(template,
+                    {
+                        fileId: folderPath,
+                        foldername: folderPath,
+                        foldercontents: htmlTotal,
+                        dir: true,
+                        open: 'opened'
+                    });
+
+                that.tabMenu.setHTML('<ul class="folder-nav">'+ html_folder_wrapper+'</ul>');
                 that.setClickHandlers();
             });
 

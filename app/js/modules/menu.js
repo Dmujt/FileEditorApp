@@ -12,6 +12,8 @@ function MenuBar(name, jsonData){
 
     var that = this;
     this.name = name;
+    this.menubar = null;
+    this.menus = {};
 
     that.constructor(gui, jsonData);
 }
@@ -23,22 +25,21 @@ function MenuBar(name, jsonData){
  */
 MenuBar.prototype.constructor = function (gui, jsonData){
 
-    // get the window object
-    var win = gui.Window.get();
+    var that = this;
 
-    var menubar = new gui.Menu({
+    that.menubar = new gui.Menu({
         type: 'menubar'
     });
 
-    var file = new gui.Menu();
-    file.append(new gui.MenuItem({
+    that.menus.file =  new gui.Menu();
+    that.menus.file.append(new gui.MenuItem({
         label: 'New',
         click: function() {
             alert('Clicked New');
         }
     }));
 
-    file.append(new gui.MenuItem({
+    that.menus.file.append(new gui.MenuItem({
         label: 'Open',
         click: function() {
             openFolderDialog();
@@ -49,32 +50,55 @@ MenuBar.prototype.constructor = function (gui, jsonData){
 
     }
 
-    if(conf.e.fileManager !== undefined && conf.e.fileManager.recents.count > 0 ){
-        var subMenu = new gui.Menu();
-        $.each(conf.e.fileManager.recents.items, function(index,path) {
-            subMenu.append(new gui.MenuItem({
-                label: path,
-                click: function() {
-                    conf.e.fileManager.openFolder(path);
-                }
-            }));
-        });
-        file.append(new gui.MenuItem({ label: 'Open Recent', submenu: subMenu}));
-    }
 
-    file.append(new gui.MenuItem({
+    that.menus.file.append(new gui.MenuItem({
         label: 'Save',
         click: function() {
             conf.saveToFile();
         }
     }));
 
-    menubar.append(new gui.MenuItem({ label: 'File', submenu: file}));
-    menubar.append(new gui.MenuItem({ label: 'Edit', submenu: new gui.Menu()}));
-    menubar.append(new gui.MenuItem({ label: 'Help', submenu: new gui.Menu()}));
+    that.menubar.append(new gui.MenuItem({ label: 'File', submenu: that.menus.file}));
+    that.menubar.append(new gui.MenuItem({ label: 'Edit', submenu: new gui.Menu()}));
+    that.menubar.append(new gui.MenuItem({ label: 'Help', submenu: new gui.Menu()}));
 
-    win.menu = menubar;
+    //Actual menu is not set until after the configurations file is loaded
 };
+
+/**
+ * Load the data from the configuration object to modify this object
+ */
+MenuBar.prototype.loadFromConfigs = function(){
+
+    if(conf.e.fileManager !== undefined){
+        if( conf.e.fileManager.recents.count > 0 ){
+            var subMenu = new gui.Menu();
+            $.each(conf.e.fileManager.recents.items, function(index,path) {
+                subMenu.append(new gui.MenuItem({
+                    label: path,
+                    click: function() {
+                        conf.e.fileManager.openFolder(path);
+                    }
+                }));
+            });
+            this.menus.file.append(new gui.MenuItem({ label: 'Open Recent', submenu: subMenu}));
+
+            //Set the menu to display information
+
+        }
+    }
+    this.resetMenu();
+
+};
+
+/**
+ * Reset the MenuItems and display the menu
+ */
+MenuBar.prototype.resetMenu = function(){
+    win.menu = this.menubar;
+
+};
+
 
 /**
  * Display the name for this element

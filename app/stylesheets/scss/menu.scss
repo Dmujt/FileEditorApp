@@ -70,14 +70,15 @@
     &::-webkit-scrollbar {
       width: 7px;
       height: 7px;
-      background-color:$gray-500;
-      background:linear-gradient($gray-500, $gray-300);
+      background-color:rgba(0,0,0,.1);
     }
     &::-webkit-scrollbar-track {
       //
     }
     &::-webkit-scrollbar-thumb {
       //
+      background-color:$gray-500;
+      background:linear-gradient($gray-500, $gray-300);
     }
   }
 

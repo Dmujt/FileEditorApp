@@ -9,6 +9,9 @@ var gui="";
 //the configuration class containing multiple other classes
 var conf = null;
 
+//the main window for the application
+var win = null;
+
 /**
  * Handles all elements for the application and saving/loading them
  * @constructor
@@ -63,7 +66,9 @@ ConfigElems.prototype.saveToFile = function(){
  * Opens the configuration file if there is one. Loaded on app start
  */
 ConfigElems.prototype.openFromFile = function(){
+
     var that = this;
+
     var jqxhr = $.getJSON(that.fileName, function(json) {
 
         var tabmenu = new TabMenu('name', '#folder-options-menu', json.toolbar);
@@ -77,7 +82,10 @@ ConfigElems.prototype.openFromFile = function(){
             },
             fileManager : new FileManager('main file manager', tabmenu, json.fileManager)
         };
+        $(document).trigger('confSetupComplete');
+
     });
+
     jqxhr.fail(function() {
         console.log( "No Config File Found" );
 
@@ -92,10 +100,8 @@ ConfigElems.prototype.openFromFile = function(){
             },
             fileManager : new FileManager('main file manager', tabmenu)
         };
+        $(document).trigger('confSetupComplete');
 
     });
 
-    jqxhr.complete(function(){
-
-    });
 };
