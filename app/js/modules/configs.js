@@ -18,8 +18,6 @@ var win = null;
  */
 function ConfigElems(){
 
-    var that = this;
-
     this.fileName = 'configs.json';
 
     this.fs = require('fs');

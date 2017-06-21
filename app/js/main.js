@@ -564,8 +564,6 @@ var win = null;
  */
 function ConfigElems(){
 
-    var that = this;
-
     this.fileName = 'configs.json';
 
     this.fs = require('fs');
@@ -694,7 +692,10 @@ function FileManager(name, tabmenu, jsonData){
         $('.folder-nav li a').click(function(e){
             conf.saveToFile();
             if($(e.target).attr('back-dir')){
-                that.openFolder($(e.target).attr('file-id'));
+
+                var newpath = $(e.target).attr('file-id').split(/[\\/]+/).slice(0,-1).join('/');
+                that.openFolder(newpath);
+
             }else{
                 var item = that.lastFolderStructure[$(this).attr('file-id')];
                 if(item.isDirectory){
@@ -792,37 +793,39 @@ FileManager.prototype.openFolder = function (folderPath, init){
 
         files.forEach(function (file) {
             that.fs.stat(folderPath + "/" + file, function(err, statType){
-                if(statType.isDirectory()){
-                    template = getTemplate("folder_item_template", "files.html");
-                    html = Mustache.to_html(template,
-                        {
-                            fileId: file,
-                            foldername: file,
-                            foldercontents: ""
-                        });
-                    htmlTotal += html;
-                    that.lastFolderStructure[file] = {
-                        html: html,
-                        fileType: 'type',
-                        isDirectory: true,
-                        fileName: file,
-                        fullPath: folderPath + "/" + file
-                    };
-                }else{
-                    template = getTemplate("file_item_template", "files.html");
-                    html = Mustache.to_html(template,
-                        {
-                            fileId: file,
-                            fileName: file
-                        });
-                    htmlTotal += html;
-                    that.lastFolderStructure[file] = {
-                        html: html,
-                        fileType: 'file',
-                        isDirectory: false,
-                        fileName:file,
-                        fullPath: folderPath + "/" + file
-                    };
+                if(statType !== undefined){
+                    if(statType.isDirectory()){
+                        template = getTemplate("folder_item_template", "files.html");
+                        html = Mustache.to_html(template,
+                            {
+                                fileId: file,
+                                foldername: file,
+                                foldercontents: ""
+                            });
+                        htmlTotal += html;
+                        that.lastFolderStructure[file] = {
+                            html: html,
+                            fileType: 'type',
+                            isDirectory: true,
+                            fileName: file,
+                            fullPath: folderPath + "/" + file
+                        };
+                    }else{
+                        template = getTemplate("file_item_template", "files.html");
+                        html = Mustache.to_html(template,
+                            {
+                                fileId: file,
+                                fileName: file
+                            });
+                        htmlTotal += html;
+                        that.lastFolderStructure[file] = {
+                            html: html,
+                            fileType: 'file',
+                            isDirectory: false,
+                            fileName:file,
+                            fullPath: folderPath + "/" + file
+                        };
+                    }
                 }
 
                 //set the directory structure
